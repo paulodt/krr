@@ -110,3 +110,5 @@
 
 (defparameter *sudoku-2*
   `(not ,*sudoku-1*))
+  
+  ;meu sudoku
