@@ -101,12 +101,6 @@
 (defun all-clauses ()
   `(and ,(clauses-1) ,(clauses-2) ,(clauses-3) ,(clauses-4)
 	,(clauses-5) ,(clauses-6) ,(clauses-7) ,(clauses-8)))
-	
-(defun sudoku (theboard)
-  (do ((a (make-array '(9 9))) (alist theboard)  (elt (formula-frm (car alist)) (formula-frm (car alist))))
-    ((eq (length alist) 0) a)
-    (progn (setf (aref a (cadr elt) (caddr elt)) (caddr elt))
-      (setf alist (cdr alist)))))
 
 (defparameter *sudoku-1*
   `(and ,(all-clauses)
@@ -115,3 +109,20 @@
 
 (defparameter *sudoku-2*
   `(not ,*sudoku-1*))
+	
+(defun sudoku1 (theboard)
+  (do ((a (make-array '(9 9))) (alist theboard)  (elt (formula-frm (car alist)) (formula-frm (car alist))))
+    ((eq (length alist) 0) a)
+    (progn (setf (aref a (cadr elt) (caddr elt)) (caddr elt))
+      (setf alist (cdr alist)))))
+      
+(defun sudoku (branch)
+  (labels ((topos (atom)
+	     (cdr (loop for c across (symbol-name atom)
+			collect (digit-char-p c)))))
+    (let ((table (make-array '(9 9))))
+      (dolist (frm branch table)
+	(if (and (atomic? frm)
+		 (equal 'true (formula-sign frm)))
+	    (let ((pos (topos (formula-frm frm))))
+	      (setf (aref table (car pos) (cadr pos)) (caddr pos))))))))
