@@ -1,5 +1,5 @@
 
-(in-package :fol)
+(in-package :krr-user)
 
 (defun variable? (x)
   (and (symbolp x)
